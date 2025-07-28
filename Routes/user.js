@@ -24,9 +24,9 @@ userRouter.post("/signup", async function (req, res) {
     console.log(e);
   }
 
-  res.json({
-    message: "signup succeeded",
-  });
+  res.json(
+    new apiResponse(200, {}, "Signed Up successfully!")
+  );
 });
 
 userRouter.post("/signin", async function (req, res) {
@@ -37,8 +37,8 @@ userRouter.post("/signin", async function (req, res) {
   }
 
   // FUTURE: can use hashing for password
-
-  const user = await userModel.findOne({
+try {
+    const user = await userModel.findOne({
     $or: [{ email }, { password }],
   });
 
@@ -46,7 +46,7 @@ userRouter.post("/signin", async function (req, res) {
     return new apiError(404, "User does not exists or wrong password!");
   } 
 
-    const token = jwt.sign(
+    const token = await jwt.sign(
       {
         id: user._id,
       },
@@ -68,6 +68,10 @@ userRouter.post("/signin", async function (req, res) {
       token: token,
     }, "User logged In successfully!")
     );
+} catch (error) {
+   return new apiError(401, error.message) 
+}
+  
   }
 );
 
@@ -85,7 +89,8 @@ return res
 })
 
 userRouter.get("/purchases", userMiddleware, async function (req, res) {
-  const userId = req.userId;
+try {
+      const userId = req.userId;
 
   const purchases = await purchaseModel.find({
     userId,
@@ -101,10 +106,15 @@ userRouter.get("/purchases", userMiddleware, async function (req, res) {
     _id: { $in: purchasedCourseIds },
   });
 
-  res.json({
+  res.json(
+    new apiResponse(200, {
     purchases,
     coursesData,
-  });
+  }, "fetched successfully!")
+  );
+} catch (error) {
+    return new apiError(401, error.message)
+}
 });
 
 module.exports = {
