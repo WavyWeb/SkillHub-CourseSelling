@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { courseAPI } from '../services/api';
-import { Course } from '../types';
-import CourseCard from '../components/CourseCard';
-import { useAuth } from '../context/AuthContext';
-import { Search, Filter } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { courseAPI } from "../services/api";
+import { Course } from "../types";
+import CourseCard from "../components/CourseCard";
+import { useAuth } from "../context/AuthContext";
+import { Search, Filter } from "lucide-react";
+import PurchasedModal from "../components/PurchasedModal";
+
+
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [priceFilter, setPriceFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priceFilter, setPriceFilter] = useState("all");
   const { isAuthenticated, isAdmin } = useAuth();
+  const [purchasedCourse, setPurchasedCourse] = useState<Course | null>(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -20,7 +24,7 @@ const Courses: React.FC = () => {
         setCourses(response.data.courses);
         setFilteredCourses(response.data.courses);
       } catch (error) {
-        console.error('Error fetching courses:', error);
+        console.error("Error fetching courses:", error);
       } finally {
         setLoading(false);
       }
@@ -34,26 +38,31 @@ const Courses: React.FC = () => {
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(course =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (course) =>
+          course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          course.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Price filter
-    if (priceFilter !== 'all') {
+    if (priceFilter !== "all") {
       switch (priceFilter) {
-        case 'free':
-          filtered = filtered.filter(course => course.price === 0);
+        case "free":
+          filtered = filtered.filter((course) => course.price === 0);
           break;
-        case 'under50':
-          filtered = filtered.filter(course => course.price > 0 && course.price < 50);
+        case "under50":
+          filtered = filtered.filter(
+            (course) => course.price > 0 && course.price < 50
+          );
           break;
-        case 'under100':
-          filtered = filtered.filter(course => course.price >= 50 && course.price < 100);
+        case "under100":
+          filtered = filtered.filter(
+            (course) => course.price >= 50 && course.price < 100
+          );
           break;
-        case 'over100':
-          filtered = filtered.filter(course => course.price >= 100);
+        case "over100":
+          filtered = filtered.filter((course) => course.price >= 100);
           break;
       }
     }
@@ -63,15 +72,18 @@ const Courses: React.FC = () => {
 
   const handlePurchase = async (courseId: string) => {
     if (!isAuthenticated) {
-      alert('Please login to purchase courses');
+      alert("Please login to purchase courses");
       return;
     }
 
     try {
+      const course = courses.find((c) => c._id === courseId);
+      if (!course) throw new Error("Course not found");
+
       await courseAPI.purchaseCourse(courseId);
-      alert('Course purchased successfully!');
+      setPurchasedCourse(course); // Show modal
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Purchase failed');
+      alert(error.response?.data?.message || "Purchase failed");
     }
   };
 
@@ -81,7 +93,10 @@ const Courses: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-xl shadow-lg p-6 animate-pulse">
+              <div
+                key={i}
+                className="bg-white rounded-xl shadow-lg p-6 animate-pulse"
+              >
                 <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
                 <div className="bg-gray-300 h-6 rounded mb-2"></div>
                 <div className="bg-gray-300 h-4 rounded mb-4"></div>
@@ -101,7 +116,8 @@ const Courses: React.FC = () => {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">All Courses</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover our comprehensive collection of courses designed to help you master new skills
+            Discover our comprehensive collection of courses designed to help
+            you master new skills
           </p>
         </div>
 
@@ -151,8 +167,12 @@ const Courses: React.FC = () => {
             <div className="text-gray-400 mb-4">
               <Search className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No courses found
+            </h3>
+            <p className="text-gray-600">
+              Try adjusting your search or filter criteria
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -167,6 +187,12 @@ const Courses: React.FC = () => {
           </div>
         )}
       </div>
+      {purchasedCourse && (
+        <PurchasedModal
+          course={purchasedCourse}
+          onClose={() => setPurchasedCourse(null)}
+        />
+      )}
     </div>
   );
 };
