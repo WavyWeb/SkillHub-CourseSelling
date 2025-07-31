@@ -18,7 +18,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   isPurchased = false 
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col h-full">
       <div className="relative overflow-hidden">
         <img
           src={course.imageUrl || 'https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=800'}
@@ -39,7 +39,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         )}
       </div>
       
-      <div className="p-6">
+      <div className="p-6 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
           {course.title}
         </h3>
@@ -64,7 +64,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </div>
         
         {showActions && (
-          <div className="flex space-x-2">
+          <div className="mt-auto flex space-x-2">
             {onPurchase && !isPurchased && (
               <button
                 onClick={() => onPurchase(course._id)}
