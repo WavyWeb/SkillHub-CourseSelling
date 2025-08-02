@@ -46,15 +46,15 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
+      <div className="max-w-md w-full dark:bg-gray-800 space-y-8 rounded-lg">
+        <div className="text-center pt-5">
           <div className="flex justify-center">
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-full">
-              <BookOpen className="h-8 w-8 text-white" />
+              <BookOpen className="h-8 w-8  text-white" />
             </div>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="mt-6 text-3xl font-bold dark:text-white text-gray-900">Welcome back</h2>
+          <p className="mt-2 text-sm dark:text-white text-gray-600">
             Don't have an account?{' '}
             <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
               Sign up here
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           {/* User Type Toggle */}
           <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
             <button
@@ -99,7 +99,7 @@ const Login: React.FC = () => {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block dark:text-white text-sm font-medium text-gray-700 mb-2">
                 Email address
               </label>
               <input
@@ -109,13 +109,13 @@ const Login: React.FC = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full px-3 text-black py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm dark:text-white font-medium text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -126,7 +126,7 @@ const Login: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors pr-10"
+                  className="w-full px-3 py-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors pr-10"
                   placeholder="Enter your password"
                 />
                 <button

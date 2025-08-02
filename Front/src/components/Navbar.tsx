@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -10,11 +10,15 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
+
 
 const Navbar: React.FC = () => {
   const { isAuthenticated, isAdmin, user, admin, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -22,7 +26,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200">
+    <nav className="bg-white shadow-lg border-b border-gray-200 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -39,7 +43,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               to="/courses"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              className="text-gray-700 dark:text-white hover:text-blue-600 font-medium transition-colors"
             >
               Browse Courses
             </Link>
@@ -49,8 +53,8 @@ const Navbar: React.FC = () => {
                 to="/my-courses"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center space-x-1"
               >
-                <ShoppingBag className="h-4 w-4" />
-                <span>My Courses</span>
+                <ShoppingBag className="h-4 w-4 dark:text-white" />
+                <span className="dark:text-white">My Courses</span>
               </Link>
             )}
 
@@ -60,11 +64,17 @@ const Navbar: React.FC = () => {
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center space-x-1"
               >
                 <Settings className="h-4 w-4" />
-                <span>Dashboard</span>
+                <span className="dark:text-white">Dashboard</span>
               </Link>
             )}
           </div>
 
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 rounded-xl border dark:border-gray-200 dark:bg-blue-500 bg-gray-200 transition"
+          >
+            {theme === "light" ? "☀️" : "🌙"}
+          </button>
           {/* Right side: User Menu (Desktop) + Mobile Menu Button */}
           <div className="flex items-center">
             {/* User Menu (original) - now hidden on small screens */}
@@ -77,7 +87,7 @@ const Navbar: React.FC = () => {
                       {isAdmin ? admin?.firstName : user?.firstName}
                     </span>
                     {isAdmin && (
-                      <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">
+                      <span className="bg-purple-100 dark:text-white text-purple-800 text-xs px-2 py-1 rounded-full font-medium">
                         Admin
                       </span>
                     )}
@@ -86,21 +96,21 @@ const Navbar: React.FC = () => {
                     onClick={handleLogout}
                     className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
                   >
-                    <LogOut className="h-4 w-4" />
-                    <span className="text-sm">Logout</span>
+                    <LogOut className="h-4 w-4 dark:text-white" />
+                    <span className="text-sm dark:text-white">Logout</span>
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
                   <Link
                     to="/login"
-                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    className="text-gray-700 dark:text-white hover:text-blue-600 font-medium transition-colors"
                   >
                     Login
                   </Link>
                   <Link
                     to="/signup"
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-shadow"
+                    className="bg-gradient-to-r dark:text-white from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-shadow"
                   >
                     Sign Up
                   </Link>
@@ -132,7 +142,7 @@ const Navbar: React.FC = () => {
             <Link
               to="/courses"
               onClick={() => setIsMenuOpen(false)}
-              className="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
+              className="text-gray-700 dark:text-white hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
             >
               Browse Courses
             </Link>
@@ -140,7 +150,7 @@ const Navbar: React.FC = () => {
               <Link
                 to="/my-courses"
                 onClick={() => setIsMenuOpen(false)}
-                className="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
+                className="text-gray-700 dark:text-white hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
               >
                 My Courses
               </Link>
@@ -149,7 +159,7 @@ const Navbar: React.FC = () => {
               <Link
                 to="/admin/dashboard"
                 onClick={() => setIsMenuOpen(false)}
-                className="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
+                className="text-gray-700 dark:text-white hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
               >
                 Dashboard
               </Link>
@@ -169,7 +179,7 @@ const Navbar: React.FC = () => {
                   onClick={handleLogout}
                   className="flex items-center space-x-1 text-gray-600 hover:text-red-600"
                 >
-                  <LogOut className="h-5 w-5" />
+                  <LogOut className="h-5 w-5 dark:text-white" />
                 </button>
               </div>
             ) : (
@@ -177,14 +187,14 @@ const Navbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsMenuOpen(false)}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50"
+                  className="block w-full dark:text-white text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setIsMenuOpen(false)}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50"
+                  className="block w-full dark:text-white text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50"
                 >
                   Sign Up
                 </Link>
