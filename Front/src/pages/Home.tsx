@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { courseAPI } from '../services/api';
 import { Course } from '../types';
 import CourseCard from '../components/CourseCard';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { BookOpen, Users, Award, TrendingUp, ArrowRight } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -137,6 +138,36 @@ const Home: React.FC = () => {
           >
             Get Started Today
           </Link>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="bg-white py-8 border-t">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h2>
+            <p className="text-lg text-gray-600">
+              We'd love to hear from you! Whether you have a question or just want to say hi.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="flex flex-col items-center">
+              <Mail className="h-8 w-8 text-blue-600 mb-2" />
+              <p className="text-lg font-semibold text-gray-700">Email</p>
+              <p className="text-gray-600">support@coursehub.com</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Phone className="h-8 w-8 text-blue-600 mb-2" />
+              <p className="text-lg font-semibold text-gray-700">Phone</p>
+              <p className="text-gray-600">+91 98765 43210</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <MapPin className="h-8 w-8 text-blue-600 mb-2" />
+              <p className="text-lg font-semibold text-gray-700">Location</p>
+              <p className="text-gray-600">Delhi, India</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
