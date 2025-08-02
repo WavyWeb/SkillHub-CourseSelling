@@ -141,7 +141,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="bg-white py-16 border-t">
+      <section className="bg-white py-8 border-t">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h2>
