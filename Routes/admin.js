@@ -41,10 +41,15 @@ adminRouter.post("/signin", async function(req, res){
             id: admin._id 
         }, JWT_ADMIN_PASSWORD);
 
-
         // FUTURE: can do cookie logic here
-        res.json({
-            token: token
+        res
+        .cookie("token", token, {
+        httpOnly: true,
+        secure: true
+        })
+        .json({
+            token: token,
+            message: "admin signed in successfully"
         })
     } else {
         res.status(403).json({
