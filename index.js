@@ -1,5 +1,5 @@
 const cookieParser = require("cookie-parser");
-require('dotenv').config()
+require('dotenv').config({path: "./config.env"});
 const { DB_NAME } = require("./config.js"); 
 // console.log(process.env.MONGODB_URI)
 
