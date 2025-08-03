@@ -49,12 +49,16 @@ adminRouter.post("/signin", async function(req, res){
             id: admin._id 
         }, JWT_ADMIN_PASSWORD);
 
+       
+      res.cookie("token", token, {
+            httpOnly: true,
+            secure: true 
+        });
 
-        // FUTURE: can do cookie logic here
-
-        return res.json(new apiResponse(200,{
+        
+        return res.json(new apiResponse(200, {
             token: token
-        },"Admin signed in successfully"))
+        }, "Admin signed in successfully"));
     } else {
         throw new apiError(403, "Incorrect credentials");
 

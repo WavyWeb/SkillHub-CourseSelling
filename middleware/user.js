@@ -2,13 +2,16 @@ const jwt = require("jsonwebtoken");
 const { JWT_USER_PASSWORD } = require("../config");
 const { apiError } = require("../utils/apiError");
 
-function userMiddleware(req, res, next) {
-  const token = req.headers.token;
-  if (!token) {
+function userMiddleware(req, res, next){
+    //const token = req.headers.token;
+    const {token} = req.cookies;
+    
+   if (!token) {
     throw new apiError(401, "Token missing, access denied");
   }
+  
+  try{
 
-  try {
     const decoded = jwt.verify(token, JWT_USER_PASSWORD);
 
     if (decoded) {
