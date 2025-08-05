@@ -1,6 +1,9 @@
 const { Router } = require("express");
 const adminRouter = Router();
 const jwt = require("jsonwebtoken");
+const {apiError}=require('../utils/apiError.js');
+const {apiResponse}=require('../utils/apiResponse.js');
+
 
 const { JWT_ADMIN_PASSWORD } = require("../config");
 
@@ -9,22 +12,27 @@ const { adminMiddleware } = require("../middleware/admin");
 
 
 adminRouter.post("/signup", async function(req, res){
-    const { email, password, firstName, lastName } = req.body;
-    // FUTURE: adding zod validation and using hashing
+     // FUTURE: adding zod validation and using hashing
 
-    try{
-        await adminModel.create({
-            email: email,
-            password: password,
-            firstName: firstName,
-            lastName: lastName
-        })
-    }catch(e){
-        console.log(e);
-    }   
-    res.json({
-        message: "signup succeeded"
-    })
+
+     const { email, password, firstName, lastName } = req.body;
+     if (!email || !password || !firstName || !lastName) {
+      throw new apiError(400, "All fields are required");
+    }
+    const existingUser=await adminModel.findOne({email});
+    if(existingUser){
+        throw new apiError(409,"User already exists.")
+    }
+    const adminObject={
+        email,
+        password,
+        firstName,
+        lastName
+    };
+    const admin=await adminModel.create(adminObject);
+   return res.status(201).json(new apiResponse(201, {}, "Signup succeeded"));
+
+    
 })
 
 adminRouter.post("/signin", async function(req, res){
@@ -35,26 +43,25 @@ adminRouter.post("/signin", async function(req, res){
         email: email,
         password: password
     });
-
+    
     if (admin) {
         const token = jwt.sign({
             id: admin._id 
         }, JWT_ADMIN_PASSWORD);
 
-        // FUTURE: can do cookie logic here
-        res
-        .cookie("token", token, {
-        httpOnly: true,
-        secure: true
-        })
-        .json({
-            token: token,
-            message: "admin signed in successfully"
-        })
+       
+      res.cookie("token", token, {
+            httpOnly: true,
+            secure: true 
+        });
+
+        
+        return res.json(new apiResponse(200, {
+            token: token
+        }, "Admin signed in successfully"));
     } else {
-        res.status(403).json({
-            message: "Incorrect credentials"
-        })
+        throw new apiError(403, "Incorrect credentials");
+
     }
 })
 
@@ -70,10 +77,8 @@ adminRouter.post("/course", adminMiddleware, async function(req, res){
         price: price, 
         creatorId: adminId
     })
-    res.json({
-        message: "course created",
-        courseId: course._id
-    })
+   return res.json(new apiResponse(201, { courseId: course._id }, "Course created"));
+
 })
 
 adminRouter.put("/course", adminMiddleware, async function(req, res){
@@ -91,10 +96,11 @@ adminRouter.put("/course", adminMiddleware, async function(req, res){
         price: price, 
         creatorId: adminId
     })
-    res.json({
-        message: "course updated",
-        courseId: course._id
-    })
+    if(!course){
+        throw new apiError(404,"Course not found or unauthorized")
+    }
+   return  res.json(new apiResponse(200, { courseId: course._id }, "Course updated"));
+
 })
 
 adminRouter.get("/course/bulk", adminMiddleware, async function(req, res){
@@ -104,11 +110,11 @@ adminRouter.get("/course/bulk", adminMiddleware, async function(req, res){
     const courses = await courseModel.find({
         creatorId: adminId
     })
-    res.json({
-        message: "course updated",
-        courses
-    })    
+   return res.json(new apiResponse(200, { courses }, "Courses fetched successfully"));
+  
 })
+
+
 
 module.exports = {
     adminRouter: adminRouter
