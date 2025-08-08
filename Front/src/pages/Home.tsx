@@ -33,7 +33,7 @@ const Home: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-blue-600 via-purple-600 to-indigo-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -75,21 +75,21 @@ const Home: React.FC = () => {
                 <div className="bg-gradient-to-r from-blue-600 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <stat.icon className="h-8 w-8 text-white" />
                 </div>
-                <div className="text-3xl font-bold dark:text-white text-gray-900 mb-2">{stat.value}</div>
-                <div className="text-gray-600 dark:text-white">{stat.label}</div>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stat.value}</div>
+                <div className="text-gray-600 dark:text-gray-300">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
-      <hr className='dark:text-white'/>
+      <hr className="border-t dark:border-gray-700" />
 
       {/* Featured Courses */}
-      <section className="py-16">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold dark:text-white text-gray-900 mb-4">Featured Courses</h2>
-            <p className="text-xl dark:text-white text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Featured Courses</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Discover our most popular courses designed by industry experts
             </p>
           </div>
@@ -97,11 +97,11 @@ const Home: React.FC = () => {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-xl shadow-lg p-6 animate-pulse">
-                  <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
-                  <div className="bg-gray-300 h-6 rounded mb-2"></div>
-                  <div className="bg-gray-300 h-4 rounded mb-4"></div>
-                  <div className="bg-gray-300 h-10 rounded"></div>
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 animate-pulse">
+                  <div className="bg-gray-300 dark:bg-gray-700 h-48 rounded-lg mb-4"></div>
+                  <div className="bg-gray-300 dark:bg-gray-700 h-6 rounded mb-2"></div>
+                  <div className="bg-gray-300 dark:bg-gray-700 h-4 rounded mb-4"></div>
+                  <div className="bg-gray-300 dark:bg-gray-700 h-10 rounded"></div>
                 </div>
               ))}
             </div>
@@ -142,11 +142,11 @@ const Home: React.FC = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="bg-white py-8 border-t">
+      <section className="bg-white dark:bg-gray-800 py-8 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h2>
-            <p className="text-lg text-gray-600">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Contact Us</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
               We'd love to hear from you! Whether you have a question or just want to say hi.
             </p>
           </div>
@@ -154,18 +154,18 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="flex flex-col items-center">
               <Mail className="h-8 w-8 text-blue-600 mb-2" />
-              <p className="text-lg font-semibold text-gray-700">Email</p>
-              <p className="text-gray-600">support@coursehub.com</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-white">Email</p>
+              <p className="text-gray-600 dark:text-gray-300">support@coursehub.com</p>
             </div>
             <div className="flex flex-col items-center">
               <Phone className="h-8 w-8 text-blue-600 mb-2" />
-              <p className="text-lg font-semibold text-gray-700">Phone</p>
-              <p className="text-gray-600">+91 98765 43210</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-white">Phone</p>
+              <p className="text-gray-600 dark:text-gray-300">+91 98765 43210</p>
             </div>
             <div className="flex flex-col items-center">
               <MapPin className="h-8 w-8 text-blue-600 mb-2" />
-              <p className="text-lg font-semibold text-gray-700">Location</p>
-              <p className="text-gray-600">Delhi, India</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-white">Location</p>
+              <p className="text-gray-600 dark:text-gray-300">Delhi, India</p>
             </div>
           </div>
         </div>

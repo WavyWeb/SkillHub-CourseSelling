@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+// src/pages/Login.tsx
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
-import { BookOpen, Eye, EyeOff, User, Shield } from 'lucide-react';
-import { auth, googleProvider } from '../firebase'; // Import Firebase auth and provider
-import { signInWithPopup } from "firebase/auth"; // Import signInWithPopup
+import { BookOpen, Eye, EyeOff, User, Shield, X } from 'lucide-react'; // Added X icon
+import { auth, googleProvider } from '../firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +18,18 @@ const Login: React.FC = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const loginRef = useRef(null); // Used to detect outside click
+
+  // NEW: Close modal if clicked outside login card
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (loginRef.current && !(loginRef.current as HTMLElement).contains(event.target as Node)) {
+        navigate('/'); // Close modal
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [navigate]);
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -23,8 +37,6 @@ const Login: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      // Here you would typically send the user's ID token to your backend
-      // to create a session or new user. For this example, we'll log in on the client.
       const idToken = await user.getIdToken();
       const userData = {
         _id: user.uid,
@@ -32,38 +44,31 @@ const Login: React.FC = () => {
         firstName: user.displayName?.split(' ')[0] || 'User',
         lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
       };
-      // You might need to adjust your backend to handle this new user data structure
-      // or create a new user in your DB if they don't exist.
-      login(idToken, userData, false); // Assuming Google sign-in is for users, not admins
+      login(idToken, userData, false);
       navigate('/courses');
     } catch (error: any) {
       setError(error.message || 'Failed to sign in with Google.');
-      console.error("Google Sign-In Error:", error);
     } finally {
       setLoading(false);
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
-      const response = isAdmin 
+      const response = isAdmin
         ? await authAPI.adminSignin({ email, password })
         : await authAPI.userSignin({ email, password });
 
       if (response.data.token) {
-        // Create user/admin object from form data since backend doesn't return user data
         const userData = {
-          _id: 'temp-id', // This would normally come from the backend
+          _id: 'temp-id',
           email,
-          firstName: 'User', // This would normally come from the backend
-          lastName: 'Name'
+          firstName: 'User',
+          lastName: 'Name',
         };
-        
         login(response.data.token, userData, isAdmin);
         navigate(isAdmin ? '/admin/dashboard' : '/courses');
       }
@@ -75,12 +80,27 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full dark:bg-gray-800 space-y-8 rounded-lg">
-        <div className="text-center pt-5">
+    // NEW: Full screen blur + dark overlay for modal-style login
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+      {/* NEW: Login card modal container with ref */}
+      <div
+        ref={loginRef}
+        className="relative max-w-md w-full dark:bg-gray-800 space-y-8 rounded-lg shadow-lg bg-white"
+      >
+        {/* NEW: Close icon (X) outside top-left to go back */}
+        <button
+          onClick={() => navigate('/')}
+          className="absolute -top-4 -right-4 bg-white dark:bg-gray-900 text-gray-700 dark:text-white rounded-full p-1 shadow-md hover:bg-gray-200 z-50"
+          aria-label="Close signup"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* ORIGINAL: Branding and heading */}
+        <div className="text-center mt-5">
           <div className="flex justify-center">
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-full">
-              <BookOpen className="h-8 w-8  text-white" />
+              <BookOpen className="h-8 w-8 text-white" />
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-bold dark:text-white text-gray-900">Welcome back</h2>
@@ -92,6 +112,7 @@ const Login: React.FC = () => {
           </p>
         </div>
 
+        {/* ORIGINAL: Login form container */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           {/* User Type Toggle */}
           <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
@@ -121,6 +142,7 @@ const Login: React.FC = () => {
             </button>
           </div>
 
+          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
@@ -182,7 +204,7 @@ const Login: React.FC = () => {
             </button>
           </form>
 
-          {/* Google Sign-in Button */}
+          {/* Google Sign-in for Students only */}
           {!isAdmin && (
             <div className="mt-6">
               <div className="relative">

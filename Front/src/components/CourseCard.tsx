@@ -18,7 +18,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   isPurchased = false 
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col h-full">
+    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl dark:shadow-gray-800 transition-all duration-300 overflow-hidden group flex flex-col h-full">
       <div className="relative overflow-hidden">
         <img
           src={course.imageUrl || 'https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=800'}
@@ -26,7 +26,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-4 right-4">
-          <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-gray-800">
+          <span className="bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-gray-800 dark:text-gray-100">
             ${course.price}
           </span>
         </div>
@@ -40,15 +40,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
       </div>
       
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
           {course.title}
         </h3>
         
-        <p className="text-gray-600 mb-4 line-clamp-3">
+        <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
           {course.description}
         </p>
         
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
           <div className="flex items-center space-x-1">
             <Clock className="h-4 w-4" />
             <span>8 hours</span>
@@ -68,7 +68,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
             {onPurchase && !isPurchased && (
               <button
                 onClick={() => onPurchase(course._id)}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:shadow-lg transition-shadow"
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/30 dark:hover:shadow-purple-500/30 transition-shadow"
               >
                 Purchase Course
               </button>
@@ -77,14 +77,14 @@ const CourseCard: React.FC<CourseCardProps> = ({
             {onEdit && (
               <button
                 onClick={() => onEdit(course)}
-                className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
                 Edit Course
               </button>
             )}
             
             {isPurchased && (
-              <button className="flex-1 bg-green-100 text-green-700 py-2 px-4 rounded-lg font-medium cursor-default">
+              <button className="flex-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 py-2 px-4 rounded-lg font-medium cursor-default">
                 Access Course
               </button>
             )}
