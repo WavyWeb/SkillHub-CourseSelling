@@ -25,15 +25,18 @@ const MyCourses: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen dark:bg-gray-800 bg-gray-50 py-8">
+      <div className="min-h-screen dark:bg-gray-900 bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-xl shadow-lg p-6 animate-pulse">
-                <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
-                <div className="bg-gray-300 h-6 rounded mb-2"></div>
-                <div className="bg-gray-300 h-4 rounded mb-4"></div>
-                <div className="bg-gray-300 h-10 rounded"></div>
+              <div
+                key={i}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 animate-pulse"
+              >
+                <div className="bg-gray-300 dark:bg-gray-700 h-48 rounded-lg mb-4"></div>
+                <div className="bg-gray-300 dark:bg-gray-700 h-6 rounded mb-2"></div>
+                <div className="bg-gray-300 dark:bg-gray-700 h-4 rounded mb-4"></div>
+                <div className="bg-gray-300 dark:bg-gray-700 h-10 rounded"></div>
               </div>
             ))}
           </div>
@@ -43,12 +46,14 @@ const MyCourses: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen dark:bg-gray-800 bg-gray-50 py-8">
+    <div className="min-h-screen dark:bg-gray-900 bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold dark:text-white text-gray-900 mb-4">My Courses</h1>
-          <p className="text-xl dark:text-white text-gray-600">
+          <h1 className="text-4xl font-bold dark:text-white text-gray-900 mb-4">
+            My Courses
+          </h1>
+          <p className="text-xl dark:text-gray-300 text-gray-600">
             Continue learning with your purchased courses
           </p>
         </div>
@@ -59,8 +64,12 @@ const MyCourses: React.FC = () => {
             <div className="text-gray-400 mb-4">
               <BookOpen className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses yet</h3>
-            <p className="text-gray-600 mb-6">Start your learning journey by purchasing your first course</p>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              No courses yet
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Start your learning journey by purchasing your first course
+            </p>
             <a
               href="/courses"
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-shadow"

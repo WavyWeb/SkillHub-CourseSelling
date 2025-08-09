@@ -38,7 +38,7 @@ const AdminDashboard: React.FC = () => {
 
   const handleUpdateCourse = async (courseData: any) => {
     if (!editingCourse) return;
-    
+
     try {
       await courseAPI.updateCourse({
         ...courseData,
@@ -85,16 +85,16 @@ const AdminDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="bg-gray-300 h-8 rounded mb-8"></div>
+            <div className="bg-gray-300 dark:bg-gray-700 h-8 rounded mb-8"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white p-6 rounded-xl shadow-lg">
-                  <div className="bg-gray-300 h-12 w-12 rounded-lg mb-4"></div>
-                  <div className="bg-gray-300 h-4 rounded mb-2"></div>
-                  <div className="bg-gray-300 h-6 rounded"></div>
+                <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                  <div className="bg-gray-300 dark:bg-gray-700 h-12 w-12 rounded-lg mb-4"></div>
+                  <div className="bg-gray-300 dark:bg-gray-700 h-4 rounded mb-2"></div>
+                  <div className="bg-gray-300 dark:bg-gray-700 h-6 rounded"></div>
                 </div>
               ))}
             </div>
@@ -105,13 +105,13 @@ const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Instructor Dashboard</h1>
-            <p className="text-gray-600 mt-2">Manage your courses and track performance</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Instructor Dashboard</h1>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">Manage your courses and track performance</p>
           </div>
           <button
             onClick={() => {
@@ -128,14 +128,14 @@ const AdminDashboard: React.FC = () => {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
-            <div key={index} className="bg-white p-6 rounded-xl shadow-lg">
+            <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
               <div className="flex items-center">
                 <div className={`${stat.color} p-3 rounded-lg`}>
                   <stat.icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{stat.label}</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -143,14 +143,14 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Courses */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Your Courses</h2>
-          
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Your Courses</h2>
+
           {courses.length === 0 ? (
             <div className="text-center py-12">
-              <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses yet</h3>
-              <p className="text-gray-600 mb-6">Create your first course to start teaching</p>
+              <BookOpen className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No courses yet</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">Create your first course to start teaching</p>
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-shadow"

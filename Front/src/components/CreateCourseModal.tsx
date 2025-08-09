@@ -58,14 +58,14 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-900">
+      <div className="bg-white dark:bg-[#1E1E1E] rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center p-6 border-b dark:border-gray-700">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {course ? 'Edit Course' : 'Create New Course'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
           >
             <X className="h-6 w-6" />
           </button>
@@ -73,7 +73,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Course Title
             </label>
             <input
@@ -83,13 +83,13 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
               required
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter course title"
             />
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Course Description
             </label>
             <textarea
@@ -99,13 +99,13 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
               rows={4}
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               placeholder="Describe what students will learn in this course"
             />
           </div>
 
           <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Price ($)
             </label>
             <input
@@ -117,13 +117,13 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
               step="0.01"
               value={formData.price}
               onChange={handleChange}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="0.00"
             />
           </div>
 
           <div>
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Course Image URL
             </label>
             <input
@@ -133,13 +133,13 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
               required
               value={formData.imageUrl}
               onChange={handleChange}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="https://example.com/image.jpg"
             />
-            
+
             {/* Sample Images */}
             <div className="mt-3">
-              <p className="text-sm text-gray-600 mb-2">Or choose from sample images:</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Or choose from sample images:</p>
               <div className="grid grid-cols-4 gap-2">
                 {sampleImages.map((imageUrl, index) => (
                   <button
@@ -149,7 +149,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
                     className={`relative rounded-lg overflow-hidden border-2 transition-colors ${
                       formData.imageUrl === imageUrl
                         ? 'border-blue-500'
-                        : 'border-gray-200 hover:border-gray-300'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'
                     }`}
                   >
                     <img
@@ -165,11 +165,11 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
             {/* Image Preview */}
             {formData.imageUrl && (
               <div className="mt-3">
-                <p className="text-sm text-gray-600 mb-2">Preview:</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
                 <img
                   src={formData.imageUrl}
                   alt="Course preview"
-                  className="w-full h-32 object-cover rounded-lg border"
+                  className="w-full h-32 object-cover rounded-lg border dark:border-gray-700"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
@@ -182,7 +182,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>
@@ -197,6 +197,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ course, onSubmit,
         </form>
       </div>
     </div>
+
   );
 };
 
