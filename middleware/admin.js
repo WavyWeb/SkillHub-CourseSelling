@@ -2,24 +2,17 @@ const jwt = require("jsonwebtoken");
 const { JWT_ADMIN_PASSWORD } = require("../config");
 const { apiError } = require("../utils/apiError");
 
-function adminMiddleware(req, res, next){
+function adminMiddleware(req, res, next) {
+  const { token } = req.cookies;
+  if (!token) return next(new apiError(401, "Token missing, access denied"));
 
-    const {token} = req.cookies;
-    if (!token) {
-        throw new apiError(401, "Token is missing. Access denied.");
-    }
-  
+  try {
     const decoded = jwt.verify(token, JWT_ADMIN_PASSWORD);
-
-    if(decoded) {
-        req.userId = decoded.indexOf;
-        next()
-    } else {
-        throw new apiError(403, "You are not signed in");
-    }
-
+    req.userId = decoded.id;
+    next();
+  } catch {
+    next(new apiError(403, "Invalid token, access denied"));
+  }
 }
 
-module.exports = {
-    adminMiddleware: adminMiddleware
-}
+module.exports = { adminMiddleware };

@@ -1,183 +1,92 @@
 const { Router } = require("express");
-const userRouter = Router();
 const jwt = require("jsonwebtoken");
 const admin = require("firebase-admin");
-
-// Make sure to initialize firebase-admin in your main index.js or app.js file
-// You can download your service account key from the Firebase console
-// admin.initializeApp({
-//   credential: admin.credential.cert(require("./path/to/your/serviceAccountKey.json"))
-// });
-
 const { JWT_USER_PASSWORD } = require("../config");
-
 const { userModel, purchaseModel, courseModel } = require("../db");
 const { userMiddleware } = require("../middleware/user");
-const { apiError } = require("../utils/apiError.js");
-const { apiResponse } = require("../utils/apiResponse.js");
+const { apiError } = require("../utils/apiError");
+const { apiResponse } = require("../utils/apiResponse");
 
-userRouter.post("/signup", async function (req, res) {
+const userRouter = Router();
+
+userRouter.post("/signup", async (req, res, next) => {
   const { email, password, firstName, lastName } = req.body;
-  // FUTURE: adding zod validation and using hashing
-
   try {
-    await userModel.create({
-      email: email,
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-    });
+    await userModel.create({ email, password, firstName, lastName });
+    res.json(new apiResponse(200, {}, "Signed Up successfully!"));
   } catch (e) {
-    console.log(e);
+    next(e);
   }
-
-  res.json(
-    new apiResponse(200, {}, "Signed Up successfully!")
-  );
 });
 
-userRouter.post("/signin", async function (req, res) {
+userRouter.post("/signin", async (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!password || !email) {
-    throw new apiError(400, "password or email is required!");
+  if (!email || !password) {
+    return next(new apiError(400, "Email and password required"));
   }
 
-  // FUTURE: can use hashing for password
   try {
-      const user = await userModel.findOne({
-      $or: [{ email }, { password }],
-    });
-
+    const user = await userModel.findOne({ email });
     if (!user || user.password !== password) {
-      return new apiError(404, "User does not exists or wrong password!");
-    } 
-
-      const token = await jwt.sign(
-        {
-          id: user._id,
-        },
-        JWT_USER_PASSWORD,
-        { expiresIn: "7d"}
-      );
-
-      const loggedInUser = await userModel.findById(user._id).select("-password");
-
-      res
-      .status(200)
-      .cookie("token", token, {
-          httpOnly: true,
-          secure: true
-      })
-      .json(
-          new apiResponse(200, {
-        user: loggedInUser,
-        token: token,
-      }, "User logged In successfully!")
-      );
-  } catch (error) {
-    return new apiError(401, error.message) 
-  }
-});
-
-// NEW: Route to handle Google Sign-In
-userRouter.post("/google-signin", async (req, res) => {
-  const { idToken } = req.body;
-
-  if (!idToken) {
-    throw new apiError(400, "ID token is required!");
-  }
-
-  try {
-    // Verify the ID token with Firebase Admin SDK
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const { uid, email, name } = decodedToken;
-
-    let user = await userModel.findOne({ email });
-
-    // If user doesn't exist, create a new one
-    if (!user) {
-      const [firstName, ...lastNameParts] = name.split(' ');
-      const lastName = lastNameParts.join(' ') || ''; // Handle names without a last name
-
-      user = await userModel.create({
-        email,
-        firstName,
-        lastName,
-        // Password is not required for Google Sign-In users
-      });
+      return next(new apiError(404, "User does not exist or wrong password"));
     }
-
-    // Generate a JWT for our application
-    const token = jwt.sign(
-      { id: user._id },
-      JWT_USER_PASSWORD,
-      { expiresIn: "7d" }
-    );
-
+    const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD, { expiresIn: "7d" });
     const loggedInUser = await userModel.findById(user._id).select("-password");
 
     res
       .status(200)
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-      })
-      .json(
-        new apiResponse(200, {
-          user: loggedInUser,
-          token: token,
-        }, "User logged in successfully with Google!")
-      );
-  } catch (error) {
-    console.error("Google Sign-In Error:", error);
-    return new apiError(401, "Invalid Google token or authentication failed.");
+      .cookie("token", token, { httpOnly: true, secure: true })
+      .json(new apiResponse(200, { user: loggedInUser, token }, "User logged in successfully!"));
+  } catch (e) {
+    next(e);
   }
 });
 
+// Google Sign-In
+userRouter.post("/google-signin", async (req, res, next) => {
+  const { idToken } = req.body;
+  if (!idToken) return next(new apiError(400, "ID token is required"));
 
-userRouter.post("/logout", async (req, res)=>{
-  res
-  .clearCookie("token", {
-      httpOnly: true,
-      secure: true
-  })
-  return res
-  .status(200)
-  .json(
-      new apiResponse(200, {}, "Logged Out Succesfully!")
-  )
-})
-
-userRouter.get("/purchases", userMiddleware, async function (req, res) {
   try {
-        const userId = req.userId;
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { email, name } = decodedToken;
+    let user = await userModel.findOne({ email });
 
-    const purchases = await purchaseModel.find({
-      userId,
-    });
-
-    let purchasedCourseIds = [];
-
-    for (let i = 0; i < purchases.length; i++) {
-      purchasedCourseIds.push(purchases[i].courseId);
+    if (!user) {
+      const [firstName, ...lastNameParts] = name.split(" ");
+      const lastName = lastNameParts.join(" ") || "";
+      user = await userModel.create({ email, firstName, lastName });
     }
 
-    const coursesData = await courseModel.find({
-      _id: { $in: purchasedCourseIds },
-    });
+    const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD, { expiresIn: "7d" });
+    const loggedInUser = await userModel.findById(user._id).select("-password");
 
-    res.json(
-      new apiResponse(200, {
-      purchases,
-      coursesData,
-    }, "fetched successfully!")
-    );
-  } catch (error) {
-      return new apiError(401, error.message)
+    res
+      .status(200)
+      .cookie("token", token, { httpOnly: true, secure: true })
+      .json(new apiResponse(200, { user: loggedInUser, token }, "User logged in successfully with Google!"));
+  } catch (e) {
+    next(new apiError(401, "Invalid Google token or authentication failed"));
   }
 });
 
-module.exports = {
-  userRouter: userRouter,
-};
+userRouter.post("/logout", (req, res) => {
+  res
+    .clearCookie("token", { httpOnly: true, secure: true })
+    .status(200)
+    .json(new apiResponse(200, {}, "Logged Out Successfully!"));
+});
+
+userRouter.get("/purchases", userMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const purchases = await purchaseModel.find({ userId });
+    const purchasedCourseIds = purchases.map(p => p.courseId);
+    const coursesData = await courseModel.find({ _id: { $in: purchasedCourseIds } });
+    res.json(new apiResponse(200, { purchases, coursesData }, "Fetched successfully!"));
+  } catch (e) {
+    next(e);
+  }
+});
+
+module.exports = userRouter;

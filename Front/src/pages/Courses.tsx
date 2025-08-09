@@ -5,8 +5,7 @@ import CourseCard from "../components/CourseCard";
 import { useAuth } from "../context/AuthContext";
 import { Search, Filter } from "lucide-react";
 import PurchasedModal from "../components/PurchasedModal";
-
-
+import { toast } from "react-toastify";
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -25,6 +24,7 @@ const Courses: React.FC = () => {
         setFilteredCourses(response.data.courses);
       } catch (error) {
         console.error("Error fetching courses:", error);
+        toast.error("Failed to fetch courses.");
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,6 @@ const Courses: React.FC = () => {
   useEffect(() => {
     let filtered = courses;
 
-    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
         (course) =>
@@ -45,7 +44,6 @@ const Courses: React.FC = () => {
       );
     }
 
-    // Price filter
     if (priceFilter !== "all") {
       switch (priceFilter) {
         case "free":
@@ -72,7 +70,7 @@ const Courses: React.FC = () => {
 
   const handlePurchase = async (courseId: string) => {
     if (!isAuthenticated) {
-      alert("Please login to purchase courses");
+      toast.warning("Please login to purchase courses");
       return;
     }
 
@@ -81,9 +79,12 @@ const Courses: React.FC = () => {
       if (!course) throw new Error("Course not found");
 
       await courseAPI.purchaseCourse(courseId);
-      setPurchasedCourse(course); // Show modal
+      setPurchasedCourse(course);
+
+      // ✅ Show success toast
+      toast.success(`"${course.title}" added to your cart!`);
     } catch (error: any) {
-      alert(error.response?.data?.message || "Purchase failed");
+      toast.error(error.response?.data?.message || "Purchase failed");
     }
   };
 
