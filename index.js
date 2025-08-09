@@ -1,28 +1,27 @@
-const cookieParser = require("cookie-parser");
 require('dotenv').config();
-const { DB_NAME } = require("./config.js"); 
-// console.log(process.env.MONGODB_URI)
-
 const express = require("express");
-const mongoose = require("mongoose");
-
-const { userRouter } = require("./Routes/user");
-const { courseRouter } = require("./Routes/course");
-const {adminRouter } = require("./Routes/admin");
+const cookieParser = require("cookie-parser");
+const connectToMongoDB = require("./config/mongodb");
+const userRouter = require("./routes/user.route");
+const adminRouter = require("./routes/admin.route");
 
 const app = express();
+const PORT = 8000;
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/course", courseRouter);
+app.use("/user", userRouter);
+app.use("/admin", adminRouter);
 
-async function main() {
-    await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
-    app.listen(5002);
-    console.log("Listening to the server")
-}
+connectToMongoDB()
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () => {
+      console.log(`🚀 Server listening on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
-main()
