@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -20,6 +22,7 @@
     "mongodb": "^6.18.0",
     "mongoose": "^8.15.0",
     "nodemon": "^3.1.10",
-    "vim": "^0.1.0"
+    "vim": "^0.1.0",
+    "zod": "^4.0.17"
   }
 }

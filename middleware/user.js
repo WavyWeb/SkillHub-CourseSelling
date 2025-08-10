@@ -4,22 +4,27 @@ const { apiError } = require("../utils/apiError");
 
 function userMiddleware(req, res, next){
     //const token = req.headers.token;
-    const {token} = req.cookies;
-    
-   if (!token) {
-    throw new apiError(401, "Token missing, access denied");
-  }
-  
-  try{
-
-    const decoded = jwt.verify(token, JWT_USER_PASSWORD);
-
-    if (decoded) {
-      req.userId = decoded.indexOf;
-      next();
+try {
+      const {token} = req.cookies;
+      
+     if (!token) {
+      throw new apiError(401, "Token missing, access denied");
     }
-  } catch (error) {
-    throw new apiError(403, "Invalid token, access denied");
+  
+    
+      const decoded = jwt.verify(token, JWT_USER_PASSWORD);
+      if (!decoded || !decoded.id) {
+        throw new apiError(403, "Invalid or expired token.");
+      }
+  
+      req.userId = decoded.id; 
+      next();
+   
+} catch (error) {
+   if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+      return next(new apiError(403, "Invalid or expired token."));
+    }
+    next(err);
   }
 }
 
