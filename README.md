@@ -5,9 +5,7 @@
 
 ---
 
-## 🌐 Live Demo
 
-👉 [Click here to explore SkillHub](https://your-skillhub-live-demo-url.vercel.app/) ---
 
 ## 📑 Table of Contents
 
@@ -95,3 +93,4 @@ Ensure you have the following installed:
 ```bash
 git clone [https://github.com/your-username/SkillHub-CourseSelling.git](https://github.com/your-username/SkillHub-CourseSelling.git)
 cd SkillHub-CourseSelling
+
