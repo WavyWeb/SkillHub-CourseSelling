@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { courseAPI } from "../services/api";
 import { Course } from "../types";
 import CourseCard from "../components/CourseCard";
 import { useAuth } from "../context/AuthContext";
 import { Search, Filter } from "lucide-react";
-import PurchasedModal from "../components/PurchasedModal";
+import PurchaseSuccessModal from "../components/PurchasedModal";
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -66,6 +67,7 @@ const Courses: React.FC = () => {
     setFilteredCourses(filtered);
   }, [courses, searchTerm, priceFilter]);
 
+  //Add razorpay logic in handlePurchase function
   const handlePurchase = async (courseId: string) => {
     if (!isAuthenticated) {
       alert("Please login to purchase courses");
@@ -76,10 +78,49 @@ const Courses: React.FC = () => {
       const course = courses.find((c) => c._id === courseId);
       if (!course) throw new Error("Course not found");
 
-      await courseAPI.purchaseCourse(courseId);
-      setPurchasedCourse(course);
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Purchase failed");
+      // 1. Create order
+      const { data } = await axios.post(
+        "http://localhost:5002/api/v1/payment/create-order",
+        {
+          amount: course.price * 100, //in paise
+          courseId: course._id,
+        }
+      );
+
+      // 2. Razorpay options
+      const options = {
+        key: "rzp_test_R5Dz7E9ZA9ddqZ",
+        amount: data.amount,
+        currency: data.currency,
+        name: "SkillHub",
+        description: course.title,
+        order_id: data.id,
+        handler: async (response: any) => {
+          try {
+            // 3. Verify payment
+            const verifyRes = await axios.post(
+              "http://localhost:5002/api/v1/payment/verify",
+              response
+            );
+
+            if (verifyRes.data.success) {
+              setPurchasedCourse(course);
+            } else {
+              alert("Payment verification failed");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Verification request failed");
+          }
+        },
+        theme: { color: "#3399cc" },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error(err);
+      alert("Payment error");
     }
   };
 
@@ -109,7 +150,9 @@ const Courses: React.FC = () => {
     <div className="min-h-screen dark:bg-gray-900 bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold dark:text-white text-gray-900 mb-4">All Courses</h1>
+          <h1 className="text-4xl font-bold dark:text-white text-gray-900 mb-4">
+            All Courses
+          </h1>
           <p className="text-xl dark:text-gray-300 text-gray-600 max-w-2xl mx-auto">
             Discover our comprehensive collection of courses designed to help
             you master new skills
@@ -178,7 +221,7 @@ const Courses: React.FC = () => {
         )}
       </div>
       {purchasedCourse && (
-        <PurchasedModal
+        <PurchaseSuccessModal
           course={purchasedCourse}
           onClose={() => setPurchasedCourse(null)}
         />
