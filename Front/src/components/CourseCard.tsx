@@ -1,6 +1,6 @@
-import React from 'react';
-import { Course } from '../types';
-import { Clock, Users, Star } from 'lucide-react';
+import React from "react";
+import { Course } from "../types";
+import { Clock, Users, Star } from "lucide-react";
 
 interface CourseCardProps {
   course: Course;
@@ -10,18 +10,21 @@ interface CourseCardProps {
   isPurchased?: boolean;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ 
-  course, 
-  onPurchase, 
-  onEdit, 
+const CourseCard: React.FC<CourseCardProps> = ({
+  course,
+  onPurchase,
+  onEdit,
   showActions = true,
-  isPurchased = false 
+  isPurchased = false,
 }) => {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl dark:shadow-gray-800 transition-all duration-300 overflow-hidden group flex flex-col h-full">
       <div className="relative overflow-hidden">
         <img
-          src={course.imageUrl || 'https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=800'}
+          src={
+            course.imageUrl ||
+            "https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=800"
+          }
           alt={course.title}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -38,16 +41,16 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </div>
         )}
       </div>
-      
+
       <div className="p-6 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
           {course.title}
         </h3>
-        
+
         <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
           {course.description}
         </p>
-        
+
         <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
           <div className="flex items-center space-x-1">
             <Clock className="h-4 w-4" />
@@ -62,7 +65,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
             <span>4.8</span>
           </div>
         </div>
-        
+
         {showActions && (
           <div className="mt-auto flex space-x-2">
             {onPurchase && !isPurchased && (
@@ -73,7 +76,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                 Purchase Course
               </button>
             )}
-            
+
             {onEdit && (
               <button
                 onClick={() => onEdit(course)}
@@ -82,7 +85,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                 Edit Course
               </button>
             )}
-            
+
             {isPurchased && (
               <button className="flex-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 py-2 px-4 rounded-lg font-medium cursor-default">
                 Access Course
