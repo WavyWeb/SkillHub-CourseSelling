@@ -12,7 +12,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTopButton from './components/ScrollToTopButton';
 
-// Internal component to use useLocation() inside the Router
+// Internal component to use. useLocation() inside .the Router
 function AppContent() {
   const location = useLocation();
   const hideNavAndFooter = ['/login', '/signup'].includes(location.pathname);
