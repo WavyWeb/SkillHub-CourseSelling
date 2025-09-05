@@ -14,7 +14,7 @@ const paymentRouter = require("./Routes/payment.js");
 const app = express();
 const PORT = 5002;
 
-// Middleware setup
+// Middlewa.re setup
 //
 app.use(express.json());
 app.use(cookieParser());
